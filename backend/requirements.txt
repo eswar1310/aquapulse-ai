@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+python-dotenv
+requests
+supabase
+pydantic
+python-multipart
+httpx
+PyMuPDF
+apscheduler
+feedparser
