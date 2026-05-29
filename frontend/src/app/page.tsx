@@ -1,5 +1,7 @@
+// Triggering a fresh build with the new root directory setting in Vercel.
 import AquaPulseHero from "@/components/AquaPulseHero";
 import LiveMarketTicker from "@/components/LiveMarketTicker";
+
 import { ArrowRight, MessageSquare, Sun, Droplets, ShieldAlert, BrainCircuit, Users } from "lucide-react";
 import Link from "next/link";
 import NewsFeed from "@/components/NewsFeed";
