@@ -1,8 +1,8 @@
 import AquaPulseHero from "@/components/AquaPulseHero";
 import LiveMarketTicker from "@/components/LiveMarketTicker";
-import MithramaAI from "@/components/MithramaAI";
 import { ArrowRight, MessageSquare, Sun, Droplets, ShieldAlert, BrainCircuit, Users } from "lucide-react";
 import Link from "next/link";
+import NewsFeed from "@/components/NewsFeed";
 
 export default function Home() {
   return (
@@ -38,9 +38,14 @@ export default function Home() {
             ))}
           </div>
         </div>
+      </section>
 
-        {/* Partners Footer Strip */}
-        <div className="relative z-20 w-full border-t border-white/5 mt-10 bg-[#021220]/80 backdrop-blur-xl py-4">
+      {/* Real-time News & Signals Feed */}
+      <NewsFeed />
+
+      {/* Partners Footer Strip */}
+      <section className="relative w-full bg-[#010a12] pb-10">
+        <div className="relative z-20 w-full border-t border-white/5 bg-[#021220]/80 backdrop-blur-xl py-4">
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
             <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest shrink-0">Trusted by Leading Partners</span>
             <div className="flex flex-wrap items-center justify-center gap-8 lg:gap-12 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
@@ -53,8 +58,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Mithrama AI Orb */}
-      <MithramaAI />
     </div>
   );
 }

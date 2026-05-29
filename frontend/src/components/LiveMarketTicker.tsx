@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import Link from "next/link";
 
 interface PriceData {
   id: string;
@@ -23,17 +24,22 @@ export default function LiveMarketTicker() {
         const { data, error } = await supabase
           .from("shrimp_prices")
           .select("*")
-          .order("market_date", { ascending: false })
-          .order("size_count", { ascending: false });
+          .order("market_date", { ascending: false });
 
         if (!error && data && data.length > 0) {
+          // Map database field count_size to size_count (e.g. "40 C" to 40)
+          const processedData = data.map((item: any) => ({
+            ...item,
+            size_count: parseInt(item.count_size) || 0
+          }));
+
           // Find the 2 most recent distinct dates
-          const distinctDates = Array.from(new Set(data.map(d => d.market_date)));
+          const distinctDates = Array.from(new Set(processedData.map(d => d.market_date)));
           const mostRecentDate = distinctDates[0];
           const previousDate = distinctDates.length > 1 ? distinctDates[1] : null;
 
-          const latestPrices = data.filter(d => d.market_date === mostRecentDate);
-          const previousPrices = previousDate ? data.filter(d => d.market_date === previousDate) : [];
+          const latestPrices = processedData.filter(d => d.market_date === mostRecentDate);
+          const previousPrices = previousDate ? processedData.filter(d => d.market_date === previousDate) : [];
 
           const computed = latestPrices.map(latest => {
             const prevRecord = previousPrices.find(p => p.size_count === latest.size_count);
@@ -136,9 +142,9 @@ export default function LiveMarketTicker() {
       <div className="h-8 w-px bg-white/10 mx-1 shrink-0"></div>
 
       {/* Action */}
-      <button className="shrink-0 px-4 py-2 text-[11px] font-semibold text-slate-300 hover:text-white flex items-center gap-1 transition-colors">
+      <Link href="/market" className="shrink-0 px-4 py-2 text-[11px] font-semibold text-slate-300 hover:text-white flex items-center gap-1 transition-colors">
         View All Prices <ArrowRightIcon className="w-3 h-3" />
-      </button>
+      </Link>
     </div>
   );
 }

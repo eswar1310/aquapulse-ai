@@ -544,7 +544,7 @@ export default function AquaPulseHero() {
               <motion.div
                 className="absolute flex items-center whitespace-nowrap"
                 animate={{ x: ["0%", "-50%"] }}
-                transition={{ duration: newsData.length ? newsData.length * 6 : 10, repeat: Infinity, ease: "linear" }}
+                transition={{ duration: newsData.length ? newsData.length * 20 : 25, repeat: Infinity, ease: "linear" }}
               >
                 {[...newsData, ...newsData].map((newsItem, idx) => (
                   <div key={idx} className="flex items-center gap-3 mr-8">

@@ -42,7 +42,7 @@ export default function MithramaAI() {
           <motion.div 
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="flex flex-col items-end gap-3 pointer-events-auto mr-10"
+            className="flex flex-col items-end gap-3 pointer-events-auto mr-4"
           >
             <div className="bg-[#021220]/80 backdrop-blur-xl border border-white/10 p-4 rounded-2xl rounded-br-sm shadow-xl flex flex-col items-start gap-1">
               <h4 className="text-aqua font-sora font-bold text-base flex items-center gap-2">Hi, I'm Mithrama 👋</h4>
@@ -73,7 +73,7 @@ export default function MithramaAI() {
             href="/aqua-ai"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full group block"
+            className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full group block"
           >
             {/* Glowing halos */}
             <div className="absolute inset-[-10%] rounded-full bg-gradient-to-tr from-aqua/20 to-cyan-neon/20 blur-2xl group-hover:blur-3xl transition-all"></div>

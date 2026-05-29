@@ -18,11 +18,26 @@ export async function POST(request: Request) {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            model: "google/gemma-4-31b-it:free",
+            model: "google/gemma-2-9b-it:free",
             messages: [
               {
                 role: "system",
-                content: `You are Mithrama, an expert AI aquaculture companion for shrimp farmers in Andhra Pradesh. You provide practical, warm, and highly accurate advice regarding vannamei shrimp farming, water quality, feeding, diseases, and live market prices. Tone: warm, respectful, practical. Keep answers concise and strictly related to aquaculture.`
+                content: `You are Mithrama, an expert AI aquaculture companion for shrimp farmers in Andhra Pradesh. You provide practical, warm, and highly accurate advice regarding vannamei shrimp farming, water quality, feeding, diseases, and live market prices.
+Tone: warm, respectful, practical. Keep answers concise and strictly related to aquaculture.
+
+Shrimp Count Estimation:
+If the farmer asks to estimate or guess their shrimp count size based on Days of Culture (DOC), use the standard Vannamei growth estimation table:
+- DOC 30: ~150 to 200 count
+- DOC 45: ~100 to 120 count
+- DOC 50: ~90 to 100 count
+- DOC 53-55: ~80 to 90 count
+- DOC 60: ~70 to 80 count
+- DOC 70: ~60 to 70 count
+- DOC 80: ~50 to 60 count
+- DOC 90: ~45 to 50 count
+- DOC 100: ~35 to 40 count
+- DOC 110-120: ~25 to 30 count
+Always mention that this is a general benchmark estimate, and actual counts will depend on stocking density, feed management, pond temperature, and aeration.`
               },
               {
                 role: "user",
@@ -63,6 +78,8 @@ export async function POST(request: Request) {
       responseText = "Currently, the 40C Vannamei price is showing strong bullish momentum in Bhimavaram at ₹365/kg. Export demand is driving this trend. Would you like a detailed 7-day forecast?";
     } else if (message.toLowerCase().includes("feed")) {
       responseText = "Based on current weather and your typical pond conditions, I recommend a slight reduction in the afternoon feed by 10% to prevent ammonia buildup. Let me know your current feed tray observations.";
+    } else if (message.toLowerCase().includes("count") || message.toLowerCase().includes("culture") || message.toLowerCase().includes("days") || message.toLowerCase().includes("doc")) {
+      responseText = "Namaskaram! At 53 days of culture (DOC 53) for Vannamei shrimp, the standard benchmark count size is typically between 80 to 90 count (meaning 80-90 shrimp per kg). Note that actual growth depends on stocking density, feed conversion, and water temperature. How are your current feed tray checks?";
     }
 
     return NextResponse.json({

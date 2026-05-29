@@ -9,6 +9,8 @@ OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 SITE_URL = os.getenv("SITE_URL", "http://localhost:3000")
 SITE_NAME = os.getenv("SITE_NAME", "AquaPulse")
 
+OCR_MODEL = os.getenv("OCR_MODEL", "openrouter/free")
+
 
 def extract_text_from_image(image_bytes: bytes):
     image_b64 = base64.b64encode(image_bytes).decode("utf-8")
@@ -22,7 +24,7 @@ def extract_text_from_image(image_bytes: bytes):
             "Content-Type": "application/json",
         },
         json={
-            "model": "baidu/qianfan-ocr-fast:free",
+            "model": OCR_MODEL,
             "messages": [
                 {
                     "role": "user",

@@ -139,17 +139,39 @@ function AquaAIChatContent() {
     setIsThinking(true);
 
     try {
-      const res = await fetch(getApiUrl("/chat"), {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          session_id: sessionId,
-          message: textToSend,
-          language,
-        }),
-      });
+      let res;
+      try {
+        res = await fetch(getApiUrl("/chat"), {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            session_id: sessionId,
+            message: textToSend,
+            language,
+          }),
+        });
+        if (!res.ok) {
+          throw new Error(`FastAPI backend responded with status ${res.status}`);
+        }
+      } catch (networkErr: any) {
+        console.warn("FastAPI backend error or offline, falling back to Next.js API scaffold:", networkErr);
+        res = await fetch("/api/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message: textToSend,
+            language,
+            history: [],
+          }),
+        });
+        if (!res.ok) {
+          throw new Error(`Next.js API responded with status ${res.status}`);
+        }
+      }
 
       const data = await res.json();
 
@@ -158,6 +180,7 @@ function AquaAIChatContent() {
         sender: "mithrama",
         text:
           data.reply ||
+          data.text ||
           "Sorry, I couldn't understand that properly.",
       };
 

@@ -16,7 +16,7 @@ export default function FeaturedMarketCard() {
         const { data: prices, error } = await supabase
           .from("shrimp_prices")
           .select("*")
-          .eq("size_count", 40)
+          .eq("count_size", "40 C")
           .order("market_date", { ascending: false })
           .limit(2);
 

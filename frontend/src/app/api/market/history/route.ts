@@ -22,20 +22,20 @@ export async function GET(request: Request) {
     if (error || !data || data.length === 0) {
       const fallbackData = [];
       const baseDate = new Date();
-      baseDate.setDate(baseDate.getDate() - 30);
+      baseDate.setDate(baseDate.getDate() - days);
       
-      for (let i = 0; i <= 30; i++) {
+      for (let i = 0; i <= days; i++) {
         const d = new Date(baseDate);
         d.setDate(d.getDate() + i);
         
         fallbackData.push({
           date: d.toISOString().split('T')[0],
-          "100C": 200 + Math.random() * 20,
-          "80C": 240 + Math.random() * 25,
-          "60C": 290 + Math.random() * 30,
-          "40C": 340 + i + Math.random() * 20, // trending up slightly
-          "30C": 300 + Math.random() * 15,
-          "25C": 260 + Math.random() * 10,
+          "100C": 200 + Math.sin(i / 10) * 15 + Math.random() * 10,
+          "80C": 240 + Math.sin(i / 10) * 20 + Math.random() * 15,
+          "60C": 290 + Math.sin(i / 10) * 25 + Math.random() * 20,
+          "40C": 340 + i * (20 / days) + Math.sin(i / 8) * 30 + Math.random() * 15,
+          "30C": 300 + Math.sin(i / 10) * 12 + Math.random() * 10,
+          "25C": 260 + Math.sin(i / 10) * 8 + Math.random() * 8,
         });
       }
       return NextResponse.json({ data: fallbackData });

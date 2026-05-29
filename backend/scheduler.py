@@ -152,6 +152,11 @@ def start_scheduler():
     print(
         "[STARTUP] AquaPulse Autonomous Intelligence Scheduler Online"
     )
+    # Trigger update jobs immediately on startup in the background
+    scheduler.add_job(refresh_prices_job)
+    scheduler.add_job(refresh_weather_job)
+    scheduler.add_job(refresh_news_job)
+    scheduler.add_job(refresh_market_pulse_job)
 
 scheduler.add_job(
     refresh_news_job,
