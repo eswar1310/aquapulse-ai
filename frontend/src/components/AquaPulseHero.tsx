@@ -11,9 +11,10 @@ import { ChevronRight, Activity, CloudRain, TrendingUp, AlertTriangle, Thermomet
 function GlowBlob({ className }: { className: string }) {
   return (
     <motion.div
-      className={`absolute rounded-full blur-[120px] pointer-events-none ${className}`}
+      className={`absolute rounded-full blur-[120px] pointer-events-none transform-gpu ${className}`}
       animate={{ scale: [1, 1.15, 1], opacity: [0.18, 0.28, 0.18] }}
       transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+      style={{ backfaceVisibility: "hidden" }}
     />
   );
 }
@@ -37,8 +38,8 @@ function CornerBracket({ pos }: { pos: "tl" | "tr" | "bl" | "br" }) {
 function RadarRing({ size, duration, reverse = false }: { size: number; duration: number; reverse?: boolean }) {
   return (
     <motion.div
-      className="absolute rounded-full border border-[#19B7A5]/10"
-      style={{ width: size, height: size }}
+      className="absolute rounded-full border border-[#19B7A5]/10 transform-gpu"
+      style={{ width: size, height: size, backfaceVisibility: "hidden" }}
       animate={{ rotate: reverse ? -360 : 360 }}
       transition={{ duration, repeat: Infinity, ease: "linear" }}
     />
@@ -49,10 +50,10 @@ function RadarRing({ size, duration, reverse = false }: { size: number; duration
 function RadarSweep() {
   return (
     <motion.div
-      className="absolute w-[220px] h-[220px]"
+      className="absolute w-[220px] h-[220px] transform-gpu"
       animate={{ rotate: 360 }}
       transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-      style={{ transformOrigin: "center" }}
+      style={{ transformOrigin: "center", backfaceVisibility: "hidden" }}
     >
       <div
         className="absolute top-1/2 left-1/2 w-[110px] h-[2px] origin-left"
@@ -65,7 +66,7 @@ function RadarSweep() {
   );
 }
 
-/** HUD intelligence panel card */
+/** HUD intelligence panel card (Desktop only) */
 function IntelCard({
   icon: Icon,
   label,
@@ -95,11 +96,12 @@ function IntelCard({
         y: { duration: 7, repeat: Infinity, ease: "easeInOut", delay: delay * 0.5 },
         scale: { duration: 0.4, ease: "easeOut" }
       }}
-      className={`absolute ${position} z-40 w-[170px] backdrop-blur-xl rounded-sm shadow-[0_8px_32px_rgba(0,0,0,0.5)] hover:shadow-[0_15px_40px_rgba(25,183,165,0.15)] group cursor-pointer`}
+      className={`absolute ${position} z-40 w-[170px] backdrop-blur-xl rounded-sm shadow-[0_8px_32px_rgba(0,0,0,0.5)] hover:shadow-[0_15px_40px_rgba(25,183,165,0.15)] group cursor-pointer hidden lg:block transform-gpu`}
       style={{
         background: "rgba(7,19,29,0.82)",
         border: "1px solid rgba(47,58,68,0.8)",
         borderTop: `1px solid ${accent}40`,
+        backfaceVisibility: "hidden",
       }}
     >
       <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
@@ -121,6 +123,48 @@ function IntelCard({
         <div className="text-[9px] text-slate-500 mt-1.5 font-[family-name:var(--font-inter)]">{sub}</div>
       </div>
     </motion.div>
+  );
+}
+
+/** Static HUD card for Mobile Grid layout */
+function IntelCardMobile({
+  icon: Icon,
+  label,
+  value,
+  sub,
+  accent,
+  bar,
+}: {
+  icon: React.ElementType;
+  label: string;
+  value: string;
+  sub: string;
+  accent: string;
+  bar?: number;
+}) {
+  return (
+    <div
+      className="z-30 w-full backdrop-blur-xl rounded-sm p-3 group cursor-pointer transform-gpu"
+      style={{
+        background: "rgba(7,19,29,0.82)",
+        border: "1px solid rgba(47,58,68,0.8)",
+        borderTop: `1px solid ${accent}40`,
+      }}
+    >
+      <div className="flex items-center gap-1.5 mb-1.5">
+        <Icon className="w-3 h-3" style={{ color: accent }} />
+        <span className="font-[family-name:var(--font-space-grotesk)] text-[9px] uppercase tracking-[0.18em] text-slate-400">{label}</span>
+      </div>
+      <div className="font-[family-name:var(--font-rajdhani)] text-lg font-bold leading-none" style={{ color: accent }}>
+        {value}
+      </div>
+      {bar !== undefined && (
+        <div className="mt-2 w-full h-[2px] bg-[#0E2230] rounded-full overflow-hidden">
+          <div className="h-full rounded-full" style={{ width: `${bar}%`, background: accent }} />
+        </div>
+      )}
+      <div className="text-[9px] text-slate-500 mt-1.5 font-[family-name:var(--font-inter)] line-clamp-1">{sub}</div>
+    </div>
   );
 }
 
@@ -199,29 +243,38 @@ export default function AquaPulseHero() {
         />
 
         {/* Floating environmental particles */}
-        {Array.from({ length: 15 }).map((_, i) => (
-          <motion.div
-            key={`particle-${i}`}
-            className="absolute rounded-full bg-[#19B7A5]/30 pointer-events-none z-[3]"
-            style={{
-              width: Math.random() * 3 + 1,
-              height: Math.random() * 3 + 1,
-              left: `${Math.random() * 100}%`,
-              bottom: `${Math.random() * 40}%`
-            }}
-            animate={{
-              y: [0, -Math.random() * 100 - 50],
-              opacity: [0, Math.random() * 0.5 + 0.1, 0],
-              x: Math.sin(i) * 20
-            }}
-            transition={{
-              duration: Math.random() * 10 + 10,
-              repeat: Infinity,
-              ease: "linear",
-              delay: Math.random() * 5
-            }}
-          />
-        ))}
+        {Array.from({ length: 15 }).map((_, i) => {
+          const size = (i % 3) + 1.5;
+          const leftPos = (i * 7) % 100;
+          const bottomPos = (i * 3) % 40;
+          const deltaY = -((i * 13) % 80) - 50;
+          const duration = ((i * 7) % 8) + 12;
+          const delay = i % 5;
+          const opacityVal = ((i * 3) % 4) / 10 + 0.15;
+          return (
+            <motion.div
+              key={`particle-${i}`}
+              className="absolute rounded-full bg-[#19B7A5]/30 pointer-events-none z-[3] hidden md:block transform-gpu"
+              style={{
+                width: size,
+                height: size,
+                left: `${leftPos}%`,
+                bottom: `${bottomPos}%`
+              }}
+              animate={{
+                y: [0, deltaY],
+                opacity: [0, opacityVal, 0],
+                x: Math.sin(i) * 15
+              }}
+              transition={{
+                duration: duration,
+                repeat: Infinity,
+                ease: "linear",
+                delay: delay
+              }}
+            />
+          );
+        })}
       </div>
 
       {/* ── AMBIENT GLOW BLOBS (muted, not neon) ─────────────────────────── */}
@@ -230,7 +283,7 @@ export default function AquaPulseHero() {
 
       {/* ── CRT SCANLINES ─────────────────────────────────────────────────── */}
       <div
-        className="absolute inset-0 z-[5] pointer-events-none"
+        className="absolute inset-0 z-[5] pointer-events-none hidden md:block"
         style={{
           backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.06) 3px, rgba(0,0,0,0.06) 4px)",
           mixBlendMode: "multiply",
@@ -394,8 +447,9 @@ export default function AquaPulseHero() {
           </motion.div>
         </div>
 
+
         {/* RIGHT — Anti-Gravity Core + Floating Intel Panels */}
-        <div className="lg:col-span-6 relative h-[540px] flex items-center justify-center mt-[-40px]">
+        <div className="lg:col-span-6 relative h-[380px] lg:h-[540px] flex items-center justify-center mt-[-40px]">
 
           {/* Radar rings — muted */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -413,8 +467,8 @@ export default function AquaPulseHero() {
           {[1, 2, 3].map((i) => (
             <motion.div
               key={i}
-              className="absolute rounded-full border border-[#19B7A5]/10"
-              style={{ width: 100, height: 100 }}
+              className="absolute rounded-full border border-[#19B7A5]/10 hidden md:block transform-gpu"
+              style={{ width: 100, height: 100, backfaceVisibility: "hidden" }}
               animate={{ scale: [1, 2.6], opacity: [0.35, 0] }}
               transition={{ duration: 3.5, repeat: Infinity, delay: i * 1.1, ease: "easeOut" }}
             />
@@ -424,7 +478,8 @@ export default function AquaPulseHero() {
           <motion.div
             animate={{ y: [-15, 15, -15], rotateZ: [-2, 2, -2] }}
             transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-            className="relative z-30 cursor-pointer group"
+            className="relative z-30 cursor-pointer group transform-gpu"
+            style={{ backfaceVisibility: "hidden" }}
           >
             <div className="relative w-36 h-36 flex items-center justify-center">
               <motion.div
@@ -523,16 +578,18 @@ export default function AquaPulseHero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, y: [0, -4, 0] }}
             transition={{ opacity: { delay: 1.6, duration: 0.6 }, y: { duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.8 } }}
-            className="absolute bottom-[5%] left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 px-4 py-2 w-[500px] max-w-[90vw]"
+            className="absolute bottom-[5%] left-1/2 z-40 flex items-center gap-3 px-4 py-2 w-[500px] max-w-[90vw] transform-gpu will-change-transform"
             style={{
               background: "rgba(7,19,29,0.88)",
               border: "1px solid rgba(47,58,68,0.8)",
               borderBottom: "2px solid rgba(107,231,255,0.35)",
               backdropFilter: "blur(12px)",
+              transform: "translate3d(-50%, 0, 0)",
+              backfaceVisibility: "hidden",
             }}
           >
             <motion.div
-              className="w-2 h-2 rounded-full bg-[#6BE7FF] shrink-0"
+              className="w-2.5 h-2.5 rounded-full bg-[#6BE7FF] shrink-0"
               animate={{ opacity: [1, 0.3, 1] }}
               transition={{ duration: 1, repeat: Infinity }}
             />
@@ -590,6 +647,39 @@ export default function AquaPulseHero() {
               {weatherData?.weather_data?.main?.humidity ? `HUMIDITY ${weatherData.weather_data.main.humidity}%` : "HUMIDITY 88%"}
             </span>
           </motion.div>
+        </div>
+
+        {/* Mobile Stats Grid — 2x2 grid shown only on mobile */}
+        <div className="grid grid-cols-2 gap-3 w-full max-w-md mx-auto px-4 mt-6 lg:hidden z-30">
+          <IntelCardMobile
+            icon={TrendingUp}
+            label="Export Signal"
+            value={pulseData?.market_bias === 'Bullish' ? "STRONG BUY" : pulseData?.market_bias === 'Bearish' ? "WEAK" : "STABLE"}
+            sub={newsData.length > 0 ? (newsData[0].title.length > 25 ? newsData[0].title.substring(0, 25) + '...' : newsData[0].title) : "Fetching signals..."}
+            accent={pulseData?.market_bias === 'Bullish' ? '#6EEB83' : pulseData?.market_bias === 'Bearish' ? '#FF4A4A' : '#6BE7FF'}
+          />
+          <IntelCardMobile
+            icon={CloudRain}
+            label="Weather Risk"
+            value={weatherData?.signal?.severity?.toUpperCase() || "LOADING..."}
+            sub={weatherData?.signal?.impact ? (weatherData.signal.impact.length > 25 ? weatherData.signal.impact.substring(0, 25) + '...' : weatherData.signal.impact) : "Awaiting telemetry"}
+            accent={weatherData?.signal?.severity === 'High' ? '#FF4A4A' : weatherData?.signal?.severity === 'Medium' ? '#FFB347' : '#19B7A5'}
+          />
+          <IntelCardMobile
+            icon={AlertTriangle}
+            label="Pond Stress"
+            value={weatherData?.signal?.severity === 'High' ? "CRITICAL" : weatherData?.signal?.severity === 'Medium' ? "ELEVATED" : "NOMINAL"}
+            sub="Based on climate telemetry"
+            accent={weatherData?.signal?.severity === 'High' ? '#FF4A4A' : weatherData?.signal?.severity === 'Medium' ? '#FFB347' : '#19B7A5'}
+            bar={weatherData?.signal?.severity === 'High' ? 85 : weatherData?.signal?.severity === 'Medium' ? 50 : 24}
+          />
+          <IntelCardMobile
+            icon={Thermometer}
+            label="Pond Temp"
+            value={weatherData?.weather_data?.main?.temp ? `${weatherData.weather_data.main.temp}°C` : "28.4°C"}
+            sub={weatherData?.weather_data?.main?.humidity ? `Humidity: ${weatherData.weather_data.main.humidity}%` : "±0.2° last 6h"}
+            accent="#6BE7FF"
+          />
         </div>
       </div>
 

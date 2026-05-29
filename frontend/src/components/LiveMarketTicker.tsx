@@ -110,7 +110,8 @@ export default function LiveMarketTicker() {
         <div className="absolute right-0 top-0 bottom-0 w-10 bg-gradient-to-l from-[#021220] to-transparent z-10 pointer-events-none"></div>
         
         <motion.div 
-          className="flex items-center gap-1 px-4"
+          className="flex items-center gap-1 px-4 transform-gpu will-change-transform"
+          style={{ transform: "translate3d(0,0,0)", backfaceVisibility: "hidden" }}
           animate={{ x: [0, -110 * prices.length] }}
           transition={{
             x: { repeat: Infinity, repeatType: "loop", duration: prices.length * 3.5, ease: "linear" },
