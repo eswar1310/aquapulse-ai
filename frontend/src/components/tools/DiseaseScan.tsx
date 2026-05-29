@@ -21,6 +21,14 @@ export default function DiseaseScan() {
       setSelectedFile(file);
       setSelectedImage(URL.createObjectURL(file));
       setError(null);
+      
+      // Auto-scroll to submit button so the user doesn't get stuck on mobile
+      setTimeout(() => {
+        const btn = document.getElementById("scan-submit-btn");
+        if (btn) {
+          btn.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }, 100);
     }
   };
 
@@ -190,6 +198,7 @@ export default function DiseaseScan() {
                 />
               </div>
               <button 
+                id="scan-submit-btn"
                 onClick={handleAnalyze}
                 disabled={isUploading || isAnalyzing}
                 className="w-full bg-[#00C2B8] text-[#010a12] py-4 rounded-2xl font-bold font-sora shadow-[0_0_20px_rgba(0,194,184,0.3)] hover:shadow-[0_0_30px_rgba(0,194,184,0.5)] transition-all flex items-center justify-center gap-2 disabled:opacity-50"

@@ -43,14 +43,14 @@ function ToolsWorkspaceContent() {
   }, [searchParams]);
 
   return (
-    <div className="flex-1 flex flex-col pt-[88px] h-screen overflow-hidden bg-[#010a12]">
+    <div className="flex-1 flex flex-col pt-[88px] lg:h-screen lg:overflow-hidden min-h-screen overflow-y-auto bg-[#010a12]">
       {/* Background Elements */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] bg-[#00C2B8]/10 blur-[120px] rounded-full mix-blend-screen"></div>
         <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#35F3FF]/5 blur-[150px] rounded-full mix-blend-screen"></div>
       </div>
 
-      <div className="flex-1 flex flex-col lg:flex-row gap-4 p-4 lg:p-6 w-full max-w-[1800px] mx-auto z-10 h-full overflow-hidden">
+      <div className="flex-1 flex flex-col lg:flex-row gap-4 p-4 lg:p-6 w-full max-w-[1800px] mx-auto z-10 lg:h-full lg:overflow-hidden">
         
         {/* LEFT NAV PANEL */}
         <aside className="w-full lg:w-72 flex-shrink-0 flex flex-col gap-6">
@@ -126,7 +126,7 @@ function ToolsWorkspaceContent() {
 
         {/* CENTER WORKSPACE */}
         <main className="flex-1 h-full flex flex-col min-w-0">
-          <div className="glass-panel rounded-3xl border border-white/10 bg-[#021220]/60 p-6 lg:p-8 h-full shadow-2xl relative overflow-hidden flex flex-col">
+          <div className="glass-panel rounded-3xl border border-white/10 bg-[#021220]/60 p-6 lg:p-8 min-h-[500px] lg:h-full shadow-2xl relative overflow-y-auto lg:overflow-hidden flex flex-col">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTool}
