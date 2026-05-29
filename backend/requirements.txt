@@ -9,3 +9,4 @@ httpx
 PyMuPDF
 apscheduler
 feedparser
+beautifulsoup4
